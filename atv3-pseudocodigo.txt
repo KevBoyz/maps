@@ -1,0 +1,83 @@
+x ← x0  # ponto inicial, ex: (−1.2, 0.5)
+delta ← delta0  # raio inicial da região de confiança
+DELTA_MAX ← valor_maximo  # raio máximo permitido
+TOL_GRAD ← 1e-6  # tolerância para critério de parada
+EPS ← 1e-12  # salvaguarda numérica (divisão por zero)
+
+
+# ── LAÇO PRINCIPAL
+
+enquanto ‖gk‖ > TOL_GRAD:
+
+    # --- 1. Avaliar função, gradiente e Hessiana no ponto atual
+
+    fk ← f(xk)  # valor da função objetivo
+
+    gk ← gradiente analítico de f em xk
+    #      ∂f/∂x = -400·x·(y - x²) - 2·(1 - x)
+    #      ∂f/∂y =  200·(y - x²)
+
+    Bk ← Hessiana analítica de f em xk
+    #      [ -400·(y-x²) + 800·x² + 2 ,  -400·x ]
+    #      [          -400·x           ,    200   ]
+
+    # --- 2. Calcular o Ponto de Cauchy (subproblema restrito)
+
+    gBg ← gkᵀ · Bk · gk  # produto escalar de curvatura
+
+    se gBg ≤ 0:
+        # Caso 1 — Curvatura não-positiva (ponto de sela ou convexa p/ baixo):
+        # O modelo desce indefinidamente na direção −g;
+        # o melhor passo vai até a fronteira da região.
+
+        sk ← −(delta / ‖gk‖) · gk
+
+    senão:
+        # Caso 2 — Curvatura positiva (formato de tigela):
+        # Existe mínimo do modelo na direção −g;
+        # calcula o passo ideal irrestrito e trunca se sair da cerca.
+
+        alpha_bar ← ‖gk‖² / gBg  # distância ao mínimo do modelo
+        # trunca no raio se necessário
+        alpha_k ← min(alpha_bar, delta / ‖gk‖)
+        sk ← −alpha_k · gk
+
+    # --- 3. Calcular a razão de fidelidade ρk
+
+    pred ← −(gkᵀ · sk + ½ · skᵀ · Bk · sk)  # redução prevista pelo modelo
+
+    # Salvaguarda: se denominador ≈ 0, o gradiente zerou → ótimo atingido
+    se | pred | < EPS:
+        xk ← xk + sk
+        parar
+
+    ared ← f(xk) − f(xk + sk)  # redução real observada na função
+
+    rho ← ared / pred  # razão: real / prevista
+
+    # --- 4. Atualizar posição e raio (Tabela — Seção 7.1)
+
+    se rho < 0.25:
+        # Modelo errou: rejeita o passo e encolhe a região
+        xk+1 ← xk
+        delta ← 0.25 · delta
+
+    senão se 0.25 ≤ rho < 0.75:
+        # Modelo razoável: aceita o passo, mantém o raio
+        xk+1 ← xk + sk
+        delta ← delta
+
+    senão(rho ≥ 0.75):
+        # Modelo excelente: aceita o passo e expande a região
+        xk+1 ← xk + sk
+        delta ← min(2 · delta, DELTA_MAX)
+
+    # Avançar para próxima iteração
+    xk ← xk+1
+
+
+# ── RESULTADO
+
+retornar xk  # solução aproximada x*
+retornar f(xk)  # valor mínimo encontrado
+retornar ‖gk‖  # norma do gradiente (verificação de otimalidade)

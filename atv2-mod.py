@@ -188,7 +188,7 @@ if __name__ == '__main__':
 
     tabela = pd.DataFrame({
         'Método': LABELS,
-        'Tempo (s)': [r['time'] for r in RESULTS],
+        'Tempo em segundos': [r['time'] for r in RESULTS],
         'Iterações': [r['iters'] for r in RESULTS],
         'f(x final)': [r['f_final'] for r in RESULTS],
         '||∇f|| final': [r['grad_final'] for r in RESULTS],

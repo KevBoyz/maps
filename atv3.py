@@ -42,7 +42,7 @@ for k in range(MAX_ITER):
 
     if norm_g < TOL_GRAD:
         print(f"{k:>5} | {fk:>14.8f} | {norm_g:>11.4e} | "
-              f"{'---':>9} | {delta:>8.5f} | CONVERGIU ✓")
+              f"{'---':>9} | {delta:>8.5f} | CONVERGIU")
         converged = True
         break
 
@@ -69,7 +69,7 @@ for k in range(MAX_ITER):
         hist_x.append(x.copy())
         hist_delta.append(delta)
         print(f"{k:>5} | {fk:>14.8f} | {norm_g:>11.4e} | "
-              f"{'denom≈0':>9} | {delta:>8.5f} | CONVERGIU ✓")
+              f"{'denom≈0':>9} | {delta:>8.5f} | CONVERGIU")
         converged = True
         break
 
@@ -105,9 +105,9 @@ gf = np.array([
     200.0*(x1f - x0f**2)
 ])
 print(f"\n{'═'*56}")
-print(f"  Solução:   x* = ({x[0]:.10f},  {x[1]:.10f})")
-print(f"  f(x*)    = {rosenbrock(x):.6e}")
-print(f"  ‖g(x*)‖  = {np.linalg.norm(gf):.6e}")
+print(f"Solução: x* = ({x[0]:.10f},  {x[1]:.10f})")
+print(f"f(x*) = {rosenbrock(x):.6e}")
+print(f"‖g(x*)‖ = {np.linalg.norm(gf):.6e}")
 print(f"{'═'*56}")
 
 # Formar figura (só para frescar)
@@ -139,7 +139,6 @@ cb.set_label('f(x₁, x₂)  [escala log]', color='#c8c8d8', fontsize=11)
 cb.ax.yaxis.set_tick_params(color='#c8c8d8')
 plt.setp(cb.ax.yaxis.get_ticklabels(), color='#c8c8d8')
 
-# Primeiras 18 + amostras do restante — fade conforme índice
 n_early = min(18, n_iters)
 c_indices = list(range(n_early))
 if n_iters > n_early:

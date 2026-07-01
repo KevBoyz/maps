@@ -102,7 +102,6 @@ def central_path_test():
           np.linalg.norm(r_stat) < 1e-12)
     print("Complementaridade:",
           np.linalg.norm(r_comp) < 1e-12)
-
     print()
 
 
@@ -229,9 +228,7 @@ VERIFICAÇÃO DAS CONDIÇÕES KKT
     print("{:.6e}".format(kkt_error(x, z)))
 
 
-
 if __name__ == "__main__":
-
     central_path_test()
     x_opt, z_opt = ipm()
     check_kkt(x_opt, z_opt)
